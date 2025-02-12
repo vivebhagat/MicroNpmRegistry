@@ -14,7 +14,7 @@ namespace MicroNpmRegistry.Controllers
     {
 
         private readonly ILogger<RegistryController> _logger;
-        RegistrySettings registrySettings { get; set; }
+        private RegistrySettings registrySettings { get; set; }
         public RegistryController(ILogger<RegistryController> logger, IOptions<RegistrySettings> options)
         {
             _logger = logger;
