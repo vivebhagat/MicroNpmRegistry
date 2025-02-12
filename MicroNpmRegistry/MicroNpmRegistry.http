@@ -1,0 +1,6 @@
+@MicroNpmRegistry_HostAddress = http://localhost:5101
+
+GET {{MicroNpmRegistry_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
