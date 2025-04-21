@@ -1,6 +1,6 @@
 ﻿using MicroNpmRegistry.Domain.Entities.Models;
 
-namespace MicroNpmRegistry.Application.Queries.NpmQueries.GetPackageMetatDataQuery
+namespace Application.Queries.NpmQueries.GetPackageMetatDataQuery
 {
     public class GetPackageMetaDataResult
     {

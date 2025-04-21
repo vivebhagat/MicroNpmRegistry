@@ -5,9 +5,9 @@ using MicroNpmRegistry.Domain.Entities;
 using MicroNpmRegistry.Domain.Entities.Models;
 using MicroNpmRegistry.Helper;
 using MediatR;
-using MicroNpmRegistry.Application.Commands.NpmCommands.PublishPackage;
-using MicroNpmRegistry.Application.Queries.NpmQueries.GetPackageMetatDataQuery;
-using MicroNpmRegistry.Application.Queries.NpmQueries.DownloadPackageQuery;
+using Application.Commands.NpmCommands.PublishPackage;
+using Application.Queries.NpmQueries.GetPackageMetatDataQuery;
+using Application.Queries.NpmQueries.DownloadPackageQuery;
 
 namespace MicroNpmRegistry.Controllers
 {
@@ -44,7 +44,6 @@ namespace MicroNpmRegistry.Controllers
             var payload = System.Text.Json.JsonSerializer.Deserialize<NpmPublishPayload>(body, options);
 
             var result = await Mediator.Send(new PublishPackageCommand { Payload =  payload,
-                LocalStoragePath = registrySettings.LocalStaoragePath,
                 fileName = filename });
            
             return Ok(new { success = true });
@@ -58,8 +57,7 @@ namespace MicroNpmRegistry.Controllers
                 return new BadRequestResult();
 
             var result = await Mediator.Send(new GetPackageMetaDataCommand {
-                FileName = name,
-                LocalStoragePath = registrySettings.LocalStaoragePath
+                FileName = name
             });
 
             if(result == null)
