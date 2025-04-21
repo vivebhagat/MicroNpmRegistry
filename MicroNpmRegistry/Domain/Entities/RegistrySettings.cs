@@ -1,4 +1,4 @@
-﻿namespace MicroNpmRegistry.Entities
+﻿namespace MicroNpmRegistry.Domain.Entities
 {
     public class RegistrySettings
     {
