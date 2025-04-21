@@ -1,10 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Infrastructure\**" />
+    <Content Remove="Infrastructure\**" />
+    <EmbeddedResource Remove="Infrastructure\**" />
+    <None Remove="Infrastructure\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.5.0" />
@@ -15,6 +22,12 @@
 
   <ItemGroup>
     <Folder Include="Packages\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application\CQRS.csproj" />
+    <ProjectReference Include="..\MnrDomain\MnrDomain.csproj" />
+    <ProjectReference Include="..\MnrInfrastructure.Interfaces\MnrInfrastructure.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

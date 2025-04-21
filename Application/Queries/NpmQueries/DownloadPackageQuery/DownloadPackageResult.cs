@@ -1,4 +1,4 @@
-﻿namespace MicroNpmRegistry.Application.Queries.NpmQueries.DownloadPackageQuery
+﻿namespace Application.Queries.NpmQueries.DownloadPackageQuery
 {
     public class DownloadPackageResult
     {

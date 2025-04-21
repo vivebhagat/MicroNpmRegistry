@@ -1,10 +1,20 @@
 ﻿using MediatR;
+using MicroNpmRegistry.Infrastructure.Storage;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace MicroNpmRegistry.Application.Commands.NpmCommands.PublishPackage
+namespace Application.Commands.NpmCommands.PublishPackage
 {
     public class PublishPackageCommandHandler : IRequestHandler<PublishPackageCommand, PublishPackageResult>
     {
+        private readonly ILogger _logger;
+        private IFileService FileService { get; }
+
+        public PublishPackageCommandHandler(IFileService fileService)
+        {
+            FileService = fileService;            
+        }
+
         public async Task<PublishPackageResult> Handle(PublishPackageCommand request, CancellationToken cancellationToken)
         {
             var packageId = request.Payload.Id;
@@ -13,10 +23,10 @@ namespace MicroNpmRegistry.Application.Commands.NpmCommands.PublishPackage
 
             // Optionally decode and save tarball
             var bytes = Convert.FromBase64String(tarballData);
-            var filePath = Path.Combine(request.LocalStoragePath, request.fileName);
+            var filePath = FileService.GetPath(request.fileName);
 
-            File.WriteAllBytes(filePath + ".tgz", bytes);
-            File.WriteAllText(filePath + ".info", JsonConvert.SerializeObject(request.Payload));
+            FileService.WriteAllBytes(filePath + ".tgz", bytes);
+            FileService.WriteAllText(filePath + ".info", JsonConvert.SerializeObject(request.Payload));
             return new PublishPackageResult();
             
         }
