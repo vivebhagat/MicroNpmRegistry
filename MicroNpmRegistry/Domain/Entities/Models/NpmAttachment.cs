@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MicroNpmRegistry.Entities.Models
+namespace MicroNpmRegistry.Domain.Entities.Models
 {
 
     public class NpmAttachment

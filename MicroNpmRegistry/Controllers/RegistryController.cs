@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using MicroNpmRegistry.Entities;
-using MicroNpmRegistry.Entities.Models;
-using System.Net;
 using System.Text.Json;
-using System.Text;
+using MicroNpmRegistry.Domain.Entities;
+using MicroNpmRegistry.Domain.Entities.Models;
+using MicroNpmRegistry.Helper;
+using MediatR;
+using MicroNpmRegistry.Application.Commands.NpmCommands.PublishPackage;
+using MicroNpmRegistry.Application.Queries.NpmQueries.GetPackageMetatDataQuery;
+using MicroNpmRegistry.Application.Queries.NpmQueries.DownloadPackageQuery;
 
 namespace MicroNpmRegistry.Controllers
 {
@@ -16,11 +18,14 @@ namespace MicroNpmRegistry.Controllers
 
         private readonly ILogger<RegistryController> _logger;
         private RegistrySettings registrySettings { get; set; }
-        public RegistryController(ILogger<RegistryController> logger, IOptions<RegistrySettings> options)
+        private IMediator Mediator { get; set; }
+        public RegistryController(ILogger<RegistryController> logger, IOptions<RegistrySettings> options, IMediator _mediator)
         {
             _logger = logger;
             registrySettings = options?.Value;
+            Mediator = _mediator;
         }
+
 
 
         [HttpPut("{orgname}%2f{filename}")]
@@ -29,19 +34,7 @@ namespace MicroNpmRegistry.Controllers
             if (orgname != registrySettings.OrganizationName)
                 return new BadRequestResult();
 
-            // Enable buffering so we can read the request body multiple times
-            Request.EnableBuffering();
-
-            // Read the raw body string
-            string body;
-            using (var reader = new StreamReader(Request.Body, Encoding.UTF8, leaveOpen: true))
-            {
-                body = await reader.ReadToEndAsync();
-            }
-
-            // Reset the stream position so other middleware can still read it
-            Request.Body.Position = 0;
-
+            string body = await HttpHelper.GetRequestBodyAsync(Request);
             // Deserialize manually
             var options = new JsonSerializerOptions
             {
@@ -50,52 +43,44 @@ namespace MicroNpmRegistry.Controllers
 
             var payload = System.Text.Json.JsonSerializer.Deserialize<NpmPublishPayload>(body, options);
 
-            var packageId = payload.Id;
-            var versionData = payload.Versions.First().Value;
-            var tarballData = payload.Attachments.First().Value.Base64Data;
-
-            // Optionally decode and save tarball
-            var bytes = Convert.FromBase64String(tarballData);
-             var filePath = Path.Combine(registrySettings.LocalStaoragePath, filename);
-
-            System.IO.File.WriteAllBytes(filePath +".tgz", bytes);
-            System.IO.File.WriteAllText(filePath + ".info" , JsonConvert.SerializeObject(payload));
-
+            var result = await Mediator.Send(new PublishPackageCommand { Payload =  payload,
+                LocalStoragePath = registrySettings.LocalStaoragePath,
+                fileName = filename });
+           
             return Ok(new { success = true });
         }
 
+
         [HttpGet("{orgname}%2f{name}")]
-        public IActionResult GetPackageMetadata(string orgname,string name)
+        public async Task<IActionResult> GetPackageMetadata(string orgname,string name)
         {
             if (orgname != registrySettings.OrganizationName)
                 return new BadRequestResult();
 
-            var _decodedName = WebUtility.UrlDecode(name);
+            var result = await Mediator.Send(new GetPackageMetaDataCommand {
+                FileName = name,
+                LocalStoragePath = registrySettings.LocalStaoragePath
+            });
 
-            var filePath = Path.Combine(registrySettings.LocalStaoragePath, $"{_decodedName}.info");
-            if (System.IO.File.Exists(filePath))
-            {
-                var metaDataString = System.IO.File.ReadAllText(filePath);
-                var s = JsonConvert.DeserializeObject<NpmPublishPayload>(metaDataString);
-                return new JsonResult(s);
-            }
-            return NotFound();
+            if(result == null)
+                return NotFound();
+
+            return new JsonResult(result?.Payload);
         }
 
+
         [HttpGet("{orgname}/{name}/-/{_orgname}/{filename}")]
-        public IActionResult DownloadPackage(string orgname, string name, string _orgname, string filename)
+        public async Task<IActionResult> DownloadPackage(string orgname, string name, string _orgname, string filename)
         {
             if (orgname == registrySettings.OrganizationName || _orgname != registrySettings.OrganizationName)
                 return new BadRequestResult();
 
-            var _decodedFileName = WebUtility.UrlDecode(filename);
+            var result = await Mediator.Send(new DownloadPackageCommand { FileName  = filename, LocalStoragePath = registrySettings.LocalStaoragePath });
+            if(result == null)
+                return NotFound();
 
-            var filePath = Path.Combine(registrySettings.LocalStaoragePath, _decodedFileName);
-            if (System.IO.File.Exists(filePath))
-            {
-                return PhysicalFile(filePath, "application/octet-stream");
-            }
-            return NotFound();
+           return PhysicalFile(result.PackageFilePath, "application/octet-stream");
+
         }
 
     }
