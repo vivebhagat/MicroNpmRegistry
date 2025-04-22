@@ -6,7 +6,7 @@ using Moq;
 
 namespace Application.Tests
 {
-    public class Tests
+    public class PublishPackageCommandTests
     {
         [SetUp]
         public void Setup()

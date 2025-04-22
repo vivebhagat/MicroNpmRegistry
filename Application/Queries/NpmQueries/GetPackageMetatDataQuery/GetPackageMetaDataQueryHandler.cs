@@ -7,14 +7,10 @@ using System.Net;
 
 namespace Application.Queries.NpmQueries.GetPackageMetatDataQuery
 {
-    public class GetPackageMetaDataQueryHandler : IRequestHandler<GetPackageMetaDataCommand, GetPackageMetaDataResult>
+    public class GetPackageMetaDataQueryHandler(ILogger<GetPackageMetaDataQueryHandler> logger, IFileService fileService) : IRequestHandler<GetPackageMetaDataCommand, GetPackageMetaDataResult>
     {
-        private IFileService FileService { get; set; }
-        private ILogger<GetPackageMetaDataQueryHandler> Logger { get; set; }
-        public GetPackageMetaDataQueryHandler(IFileService fileService)
-        {
-            FileService = fileService;
-        }
+        private readonly ILogger<GetPackageMetaDataQueryHandler> Logger = logger;
+        private IFileService FileService { get; set; } = fileService;
 
         public async Task<GetPackageMetaDataResult> Handle(GetPackageMetaDataCommand request, CancellationToken cancellationToken)
         {
