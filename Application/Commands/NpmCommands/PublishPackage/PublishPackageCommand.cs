@@ -8,6 +8,5 @@ namespace Application.Commands.NpmCommands.PublishPackage
     {
         public NpmPublishPayload Payload { get;  set; }
         public StorageConfiguration StorageConfiguration { get; set; }
-        public string fileName { get; set; }
     }
 }

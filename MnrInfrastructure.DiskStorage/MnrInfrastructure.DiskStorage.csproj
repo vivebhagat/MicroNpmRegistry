@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MnrDomain\MnrDomain.csproj" />
     <ProjectReference Include="..\MnrInfrastructure.Interfaces\MnrInfrastructure.Interfaces.csproj" />
   </ItemGroup>

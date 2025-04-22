@@ -2,10 +2,11 @@
 {
     public interface IFileService
     {
-        void WriteAllBytes(string path, byte[] bytes);
-        void WriteAllText(string path, string content);
+        Task WriteAllByteAsync(string path, byte[] bytes);
+        Task WriteAllTextAsync(string path, string content);
         Boolean Exists(string path);
         string ReadAllText(string path);
         string GetPath(string decodedFileName);
+        void DeleteFile(string tarBallFilePath);
     }
 }

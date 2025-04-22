@@ -5,10 +5,10 @@ namespace MicroNpmRegistry.Infrastructure.Storage
 {
     public class LocalFileService : IFileService
     {        
-        private RegistrySettings regsitrySettings { get; set; }
+        private RegistrySettings RegsitrySettings { get; set; }
         public LocalFileService(IOptions<RegistrySettings> options)
         {
-            this.regsitrySettings = options.Value;   
+            this.RegsitrySettings = options.Value;   
         }
 
         public bool Exists(string path)
@@ -21,19 +21,24 @@ namespace MicroNpmRegistry.Infrastructure.Storage
             return File.ReadAllText(path);
         }
 
-        public void WriteAllBytes(string path, byte[] bytes)
+        public async Task WriteAllByteAsync(string path, byte[] bytes)
         {
-            File.WriteAllBytes(path, bytes);  
+           await File.WriteAllBytesAsync(path, bytes); 
         }
 
-        public void WriteAllText(string path, string content)
+        public async Task WriteAllTextAsync(string path, string content)
         {
-             File.WriteAllText(path, content);
+            await File.WriteAllTextAsync(path, content);
         }
 
         public string GetPath(string filename)
         {
             return Path.Combine();
+        }
+
+        public void DeleteFile(string tarBallFilePath)
+        {
+            File.Delete(tarBallFilePath);
         }
     }
 }
