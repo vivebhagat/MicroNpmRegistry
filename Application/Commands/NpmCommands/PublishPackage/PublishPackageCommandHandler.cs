@@ -10,23 +10,45 @@ namespace Application.Commands.NpmCommands.PublishPackage
         private readonly ILogger _logger;
         private IFileService FileService { get; }
 
-        public PublishPackageCommandHandler(IFileService fileService)
+        public PublishPackageCommandHandler(ILogger logger, IFileService fileService)
         {
+            _logger = logger;
             FileService = fileService;            
         }
 
-        public async Task<PublishPackageResult> Handle(PublishPackageCommand request, CancellationToken cancellationToken)
+        public async Task<PublishPackageResult?> Handle(PublishPackageCommand request, CancellationToken cancellationToken)
         {
+            if (request?.Payload is not { Name: not null, Attachments: not null })
+                return null;
+            
             var packageId = request.Payload.Id;
-            var versionData = request.Payload.Versions.First().Value;
             var tarballData = request.Payload.Attachments.First().Value.Base64Data;
 
-            // Optionally decode and save tarball
             var bytes = Convert.FromBase64String(tarballData);
-            var filePath = FileService.GetPath(request.fileName);
 
-            FileService.WriteAllBytes(filePath + ".tgz", bytes);
-            FileService.WriteAllText(filePath + ".info", JsonConvert.SerializeObject(request.Payload));
+            var tarBallFilePath = FileService.GetPath($"{request.Payload.Name}.tgz");
+            var metaDataFilePath = FileService.GetPath($"{request.Payload.Name}.info");
+
+            var saveTarTask = FileService.WriteAllByteAsync(tarBallFilePath, bytes);
+            var saveMetaDataTask = FileService.WriteAllTextAsync(metaDataFilePath, JsonConvert.SerializeObject(request.Payload));
+
+            try
+            {
+                await Task.WhenAll(saveTarTask, saveMetaDataTask);
+            }
+            catch
+            {
+                try
+                {
+                    FileService.DeleteFile(tarBallFilePath);
+                    FileService.DeleteFile(metaDataFilePath);
+                }
+                finally
+                {
+                }
+                return null;
+            }
+
             return new PublishPackageResult();
             
         }

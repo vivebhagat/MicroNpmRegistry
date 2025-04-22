@@ -41,10 +41,9 @@ namespace MicroNpmRegistry.Controllers
                 PropertyNameCaseInsensitive = true
             };
 
-            var payload = System.Text.Json.JsonSerializer.Deserialize<NpmPublishPayload>(body, options);
+            var payload = JsonSerializer.Deserialize<NpmPublishPayload>(body, options);
 
-            var result = await Mediator.Send(new PublishPackageCommand { Payload =  payload,
-                fileName = filename });
+            var result = await Mediator.Send(new PublishPackageCommand { Payload =  payload });
            
             return Ok(new { success = true });
         }
@@ -73,7 +72,9 @@ namespace MicroNpmRegistry.Controllers
             if (orgname == registrySettings.OrganizationName || _orgname != registrySettings.OrganizationName)
                 return new BadRequestResult();
 
-            var result = await Mediator.Send(new DownloadPackageCommand { FileName  = filename, LocalStoragePath = registrySettings.LocalStaoragePath });
+            var result = await Mediator.Send(new DownloadPackageCommand { FileName  = filename, 
+                LocalStoragePath = registrySettings.LocalStaoragePath });
+
             if(result == null)
                 return NotFound();
 
