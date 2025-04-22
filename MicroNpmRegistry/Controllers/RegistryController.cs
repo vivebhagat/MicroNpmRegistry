@@ -45,6 +45,9 @@ namespace MicroNpmRegistry.Controllers
 
             var result = await Mediator.Send(new PublishPackageCommand { Payload =  payload });
            
+            if(result == null)
+                return new BadRequestResult();
+
             return Ok(new { success = true });
         }
 
@@ -75,7 +78,10 @@ namespace MicroNpmRegistry.Controllers
             var result = await Mediator.Send(new DownloadPackageCommand { FileName  = filename, 
                 LocalStoragePath = registrySettings.LocalStaoragePath });
 
-            if(result == null)
+            if(result == null) 
+                return BadRequest();
+
+            if(string.IsNullOrEmpty(result.PackageFilePath))
                 return NotFound();
 
            return PhysicalFile(result.PackageFilePath, "application/octet-stream");

@@ -5,18 +5,16 @@ using System.Net;
 
 namespace Application.Queries.NpmQueries.DownloadPackageQuery
 {
-    public class DownloadPackageQueryHandler : IRequestHandler<DownloadPackageCommand, DownloadPackageResult>
+    public class DownloadPackageQueryHandler(ILogger<DownloadPackageQueryHandler> logger, IFileService _fileService) : IRequestHandler<DownloadPackageCommand, DownloadPackageResult>
     {
-        private readonly ILogger _logger;
-        private IFileService FileService { get; }
-
-        public DownloadPackageQueryHandler(IFileService fileService)
-        {
-            FileService = fileService;             
-        }
+        private readonly ILogger<DownloadPackageQueryHandler> Logger = logger;
+        private IFileService FileService { get; } = _fileService;
 
         public async Task<DownloadPackageResult> Handle(DownloadPackageCommand request, CancellationToken cancellationToken)
         {
+            if (request is not { FileName: not null, LocalStoragePath: not null })
+                return null;
+
             var _decodedFileName = WebUtility.UrlDecode(request.FileName);
 
             var filePath = FileService.GetPath(_decodedFileName);
@@ -24,7 +22,7 @@ namespace Application.Queries.NpmQueries.DownloadPackageQuery
             if (FileService.Exists(filePath))
                 return new DownloadPackageResult { PackageFilePath = filePath };
            
-            return null;
+            return new DownloadPackageResult();
         }
     }
 }

@@ -5,16 +5,10 @@ using Newtonsoft.Json;
 
 namespace Application.Commands.NpmCommands.PublishPackage
 {
-    public class PublishPackageCommandHandler : IRequestHandler<PublishPackageCommand, PublishPackageResult>
+    public class PublishPackageCommandHandler(ILogger<PublishPackageCommandHandler> logger, IFileService fileService) : IRequestHandler<PublishPackageCommand, PublishPackageResult>
     {
-        private readonly ILogger _logger;
-        private IFileService FileService { get; }
-
-        public PublishPackageCommandHandler(ILogger logger, IFileService fileService)
-        {
-            _logger = logger;
-            FileService = fileService;            
-        }
+        private readonly ILogger<PublishPackageCommandHandler> Logger = logger;
+        private IFileService FileService { get; } = fileService;
 
         public async Task<PublishPackageResult?> Handle(PublishPackageCommand request, CancellationToken cancellationToken)
         {
