@@ -5,12 +5,12 @@ using System.Net;
 
 namespace Application.Queries.NpmQueries.DownloadPackageQuery
 {
-    public class DownloadPackageQueryHandler(ILogger<DownloadPackageQueryHandler> logger, IFileService _fileService) : IRequestHandler<DownloadPackageCommand, DownloadPackageResult>
+    public class DownloadPackageQueryHandler(ILogger<DownloadPackageQueryHandler> logger, IFileService _fileService) : IRequestHandler<DownloadPackageQueryRequest, DownloadPackageResult>
     {
         private readonly ILogger<DownloadPackageQueryHandler> Logger = logger;
         private IFileService FileService { get; } = _fileService;
 
-        public async Task<DownloadPackageResult> Handle(DownloadPackageCommand request, CancellationToken cancellationToken)
+        public async Task<DownloadPackageResult> Handle(DownloadPackageQueryRequest request, CancellationToken cancellationToken)
         {
             if (request is not { FileName: not null, LocalStoragePath: not null })
                 return null;

@@ -16,7 +16,7 @@ namespace Application.Tests
         [Test]
         public async Task Test_NullRequestHandler_ReturnsNull()
         {
-            ILogger logger = new Mock<ILogger>().Object;
+            var logger = new Mock<ILogger<PublishPackageCommandHandler>>().Object;
             IFileService service = new Mock<IFileService>().Object;
 
             var publishPackageCommandHandler = new PublishPackageCommandHandler(logger, service);
@@ -28,11 +28,11 @@ namespace Application.Tests
         [Test]
         public async Task Test_EmptyRequestHandler_ReturnsNull()
         {
-            ILogger logger = new Mock<ILogger>().Object;
+            var logger = new Mock<ILogger<PublishPackageCommandHandler>>().Object;
             IFileService service = new Mock<IFileService>().Object;
 
             var publishPackageCommandHandler = new PublishPackageCommandHandler(logger, service);
-            var result = await publishPackageCommandHandler.Handle(new PublishPackageCommand(), CancellationToken.None);
+            var result = await publishPackageCommandHandler.Handle(new PublishPackageCommandRequest(), CancellationToken.None);
 
             Assert.That(result, Is.Null);
         }
@@ -40,11 +40,11 @@ namespace Application.Tests
         [Test]
         public async Task Test_MissingAttachmentRequestHandler_ReturnsNull()
         {
-            ILogger logger = new Mock<ILogger>().Object;
+            var logger = new Mock<ILogger<PublishPackageCommandHandler>>().Object;
             IFileService service = new Mock<IFileService>().Object;
 
 
-            var input = new PublishPackageCommand()
+            var input = new PublishPackageCommandRequest()
             {
                 Payload = new NpmPublishPayload
                 {
@@ -62,10 +62,10 @@ namespace Application.Tests
         [Test]
         public async Task Test_ValidAttachmentContentRequestHandler_ReturnsSuccess()
         {
-            ILogger logger = new Mock<ILogger>().Object;
+            var logger = new Mock<ILogger<PublishPackageCommandHandler>>().Object;
             IFileService service = new Mock<IFileService>().Object;
 
-            var input = new PublishPackageCommand()
+            var input = new PublishPackageCommandRequest()
             {
                 Payload = new NpmPublishPayload
                 {
