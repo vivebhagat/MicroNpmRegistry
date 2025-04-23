@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.Tests
 {
-    public class DownloadPackageCommandTests
+    public class DownloadPackageQueryTests
     {
         [SetUp]
         public void Setup()
@@ -21,10 +21,10 @@ namespace Application.Tests
         [Test]
         public async Task Test_NullRequestForDownloadPackage_ReturnsNull()
         {
-            ILogger logger = new Mock<ILogger>().Object;
+            var logger = new Mock<ILogger<DownloadPackageQueryHandler>>().Object;
             IFileService service = new Mock<IFileService>().Object;
 
-            var downloadPackageQueryHandler = new DownloadPackageQueryHandler(service);
+            var downloadPackageQueryHandler = new DownloadPackageQueryHandler(logger,service);
 
             var result = await downloadPackageQueryHandler.Handle(null, CancellationToken.None);
 
@@ -34,16 +34,16 @@ namespace Application.Tests
         [Test]
         public async Task Test_MissingPackageRequestForDownloadPackage_ReturnsEmptyPath()
         {
-            ILogger logger = new Mock<ILogger>().Object;
+            var logger = new Mock<ILogger<DownloadPackageQueryHandler>>().Object;
             var serviceMock = new Mock<IFileService>();
 
             serviceMock.Setup(m => m.Exists(It.IsAny<string>())).Returns(false);
 
             var service = serviceMock.Object;
 
-            var downloadPackageQueryHandler = new DownloadPackageQueryHandler(service);
+            var downloadPackageQueryHandler = new DownloadPackageQueryHandler(logger, service);
 
-            var result = await downloadPackageQueryHandler.Handle(new DownloadPackageCommand
+            var result = await downloadPackageQueryHandler.Handle(new DownloadPackageQueryRequest
             {
                 FileName = "test",
                 LocalStoragePath = "test"

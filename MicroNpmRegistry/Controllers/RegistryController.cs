@@ -43,7 +43,7 @@ namespace MicroNpmRegistry.Controllers
 
             var payload = JsonSerializer.Deserialize<NpmPublishPayload>(body, options);
 
-            var result = await Mediator.Send(new PublishPackageCommand { Payload =  payload });
+            var result = await Mediator.Send(new PublishPackageCommandRequest { Payload =  payload });
            
             if(result == null)
                 return new BadRequestResult();
@@ -58,7 +58,7 @@ namespace MicroNpmRegistry.Controllers
             if (orgname != registrySettings.OrganizationName)
                 return new BadRequestResult();
 
-            var result = await Mediator.Send(new GetPackageMetaDataCommand {
+            var result = await Mediator.Send(new GetPackageMetaDataQueryRequest {
                 FileName = name
             });
 
@@ -75,7 +75,7 @@ namespace MicroNpmRegistry.Controllers
             if (orgname == registrySettings.OrganizationName || _orgname != registrySettings.OrganizationName)
                 return new BadRequestResult();
 
-            var result = await Mediator.Send(new DownloadPackageCommand { FileName  = filename, 
+            var result = await Mediator.Send(new DownloadPackageQueryRequest { FileName  = filename, 
                 LocalStoragePath = registrySettings.LocalStaoragePath });
 
             if(result == null) 

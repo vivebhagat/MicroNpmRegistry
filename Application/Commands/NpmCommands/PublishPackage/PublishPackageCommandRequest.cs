@@ -4,7 +4,7 @@ using MicroNpmRegistry.Domain.Entities.Models;
 
 namespace Application.Commands.NpmCommands.PublishPackage
 {
-    public class PublishPackageCommand: IRequest<PublishPackageResult>
+    public class PublishPackageCommandRequest: IRequest<PublishPackageResult>
     {
         public NpmPublishPayload Payload { get;  set; }
         public StorageConfiguration StorageConfiguration { get; set; }
