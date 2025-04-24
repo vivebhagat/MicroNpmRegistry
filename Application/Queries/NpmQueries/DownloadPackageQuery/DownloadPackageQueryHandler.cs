@@ -1,11 +1,12 @@
-﻿using MediatR;
+﻿using CQRS;
+using MediatR;
 using MicroNpmRegistry.Infrastructure.Storage;
 using Microsoft.Extensions.Logging;
 using System.Net;
 
 namespace Application.Queries.NpmQueries.DownloadPackageQuery
 {
-    public class DownloadPackageQueryHandler(ILogger<DownloadPackageQueryHandler> logger, IFileService _fileService) : IRequestHandler<DownloadPackageQueryRequest, DownloadPackageResult>
+    public class DownloadPackageQueryHandler(ILogger<DownloadPackageQueryHandler> logger, IFileService _fileService) : IRequestHandler<DownloadPackageQueryRequest, DownloadPackageResult>, IApplicationHandler
     {
         private readonly ILogger<DownloadPackageQueryHandler> Logger = logger;
         private IFileService FileService { get; } = _fileService;

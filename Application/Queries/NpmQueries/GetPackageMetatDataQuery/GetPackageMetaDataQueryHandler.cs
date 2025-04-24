@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using CQRS;
+using MediatR;
 using MicroNpmRegistry.Domain.Entities.Models;
 using MicroNpmRegistry.Infrastructure.Storage;
 using Microsoft.Extensions.Logging;
@@ -7,7 +8,7 @@ using System.Net;
 
 namespace Application.Queries.NpmQueries.GetPackageMetatDataQuery
 {
-    public class GetPackageMetaDataQueryHandler(ILogger<GetPackageMetaDataQueryHandler> logger, IFileService fileService) : IRequestHandler<GetPackageMetaDataQueryRequest, GetPackageMetaDataResult>
+    public class GetPackageMetaDataQueryHandler(ILogger<GetPackageMetaDataQueryHandler> logger, IFileService fileService) : IRequestHandler<GetPackageMetaDataQueryRequest, GetPackageMetaDataResult>, IApplicationHandler
     {
         private readonly ILogger<GetPackageMetaDataQueryHandler> Logger = logger;
         private IFileService FileService { get; set; } = fileService;
