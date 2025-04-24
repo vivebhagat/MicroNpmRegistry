@@ -1,6 +1,8 @@
 
+using CQRS;
+using MediatR;
 using MicroNpmRegistry.Domain.Entities;
-using System.Reflection;
+using MicroNpmRegistry.Infrastructure.Storage;
 
 namespace MicroNpmRegistry
 {
@@ -12,10 +14,12 @@ namespace MicroNpmRegistry
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddScoped<IFileService,LocalFileService>();
             builder.Services.AddMediatR(cfg => {
-                cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                cfg.RegisterServicesFromAssembly(typeof(IApplicationHandler).Assembly);
                 });
+
+            builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

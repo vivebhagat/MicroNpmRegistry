@@ -1,11 +1,13 @@
-﻿using MediatR;
+﻿using CQRS;
+using CQRS.Commands;
+using MediatR;
 using MicroNpmRegistry.Infrastructure.Storage;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Application.Commands.NpmCommands.PublishPackage
 {
-    public class PublishPackageCommandHandler(ILogger<PublishPackageCommandHandler> logger, IFileService fileService) : IRequestHandler<PublishPackageCommandRequest, PublishPackageResult>
+    public class PublishPackageCommandHandler(ILogger<PublishPackageCommandHandler> logger, IFileService fileService) : IRequestHandler<PublishPackageCommandRequest, PublishPackageResult>, IApplicationHandler
     {
         private readonly ILogger<PublishPackageCommandHandler> Logger = logger;
         private IFileService FileService { get; } = fileService;
