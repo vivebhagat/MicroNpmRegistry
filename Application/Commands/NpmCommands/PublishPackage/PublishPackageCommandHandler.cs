@@ -1,5 +1,4 @@
 ﻿using CQRS;
-using CQRS.Commands;
 using MediatR;
 using MicroNpmRegistry.Infrastructure.Storage;
 using Microsoft.Extensions.Logging;
