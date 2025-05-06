@@ -21,8 +21,8 @@ namespace Application.Commands.NpmCommands.PublishPackage
 
             var bytes = Convert.FromBase64String(tarballData);
 
-            var tarBallFilePath = FileService.GetPath($"{request.Payload.Name}.tgz");
-            var metaDataFilePath = FileService.GetPath($"{request.Payload.Name}.info");
+            var tarBallFilePath = FileService.GetFullPathForFile($"{request.Payload.Name.Replace($"{request.OrgnizationName}/","",StringComparison.OrdinalIgnoreCase)}.tgz");
+            var metaDataFilePath = FileService.GetFullPathForFile($"{request.Payload.Name.Replace($"{request.OrgnizationName}/", "", StringComparison.OrdinalIgnoreCase)}.info");
 
             var saveTarTask = FileService.WriteAllByteAsync(tarBallFilePath, bytes);
             var saveMetaDataTask = FileService.WriteAllTextAsync(metaDataFilePath, JsonConvert.SerializeObject(request.Payload));

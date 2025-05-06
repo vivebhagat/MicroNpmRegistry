@@ -18,7 +18,7 @@ namespace Application.Queries.NpmQueries.DownloadPackageQuery
 
             var _decodedFileName = WebUtility.UrlDecode(request.FileName);
 
-            var filePath = FileService.GetPath(_decodedFileName);
+            var filePath = FileService.GetFullPathForFile(_decodedFileName);
 
             if (FileService.Exists(filePath))
                 return new DownloadPackageResult { PackageFilePath = filePath };
