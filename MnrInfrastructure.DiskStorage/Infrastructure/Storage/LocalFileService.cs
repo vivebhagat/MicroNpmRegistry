@@ -31,9 +31,9 @@ namespace MicroNpmRegistry.Infrastructure.Storage
             await File.WriteAllTextAsync(path, content);
         }
 
-        public string GetPath(string filename)
+        public string GetFullPathForFile(string filename)
         {
-            return Path.Combine();
+            return Path.Combine(this.RegsitrySettings.LocalStaoragePath,filename);
         }
 
         public void DeleteFile(string tarBallFilePath)

@@ -43,7 +43,7 @@ namespace MicroNpmRegistry.Controllers
 
             var payload = JsonSerializer.Deserialize<NpmPublishPayload>(body, options);
 
-            var result = await Mediator.Send(new PublishPackageCommandRequest { Payload =  payload });
+            var result = await Mediator.Send(new PublishPackageCommandRequest { Payload =  payload, OrgnizationName = orgname });
            
             if(result == null)
                 return new BadRequestResult();

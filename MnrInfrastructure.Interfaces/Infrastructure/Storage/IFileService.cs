@@ -6,7 +6,7 @@
         Task WriteAllTextAsync(string path, string content);
         Boolean Exists(string path);
         string ReadAllText(string path);
-        string GetPath(string decodedFileName);
+        string GetFullPathForFile(string decodedFileName);
         void DeleteFile(string tarBallFilePath);
     }
 }

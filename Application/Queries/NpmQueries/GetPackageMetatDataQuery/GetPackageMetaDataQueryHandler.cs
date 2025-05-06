@@ -15,12 +15,12 @@ namespace Application.Queries.NpmQueries.GetPackageMetatDataQuery
 
         public async Task<GetPackageMetaDataResult> Handle(GetPackageMetaDataQueryRequest request, CancellationToken cancellationToken)
         {
-            if (request is not { FileName: not null, StorageConfiguration : not null })
+            if (request is not { FileName: not null })
                 return null;
 
             var _decodedName = WebUtility.UrlDecode(request.FileName);
 
-            var filePath = FileService.GetPath($"{_decodedName}.info");
+            var filePath = FileService.GetFullPathForFile($"{_decodedName}.info");
             if (FileService.Exists(filePath))
             {
                 var metaDataString = FileService.ReadAllText(filePath);
